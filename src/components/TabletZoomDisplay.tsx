@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { CartItem, Product } from '../types';
 import { ProductSketchIcon } from './ProductSketchIcon';
-import { Plus, Minus, X, Trash2, CheckCircle2, RotateCcw, Battery, Wifi, Clock, ShoppingCart } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { Plus, Minus, X, Trash2, Battery, Wifi, Clock, ShoppingCart } from 'lucide-react';
 import { playRemoveSound } from '../utils/sound';
 
 interface TabletZoomDisplayProps {
@@ -26,7 +25,6 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
   onRemoveItem,
   onClearCart,
 }) => {
-  const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [touchPos, setTouchPos] = useState<{ x: number; y: number } | null>(null);
   const [isTouchPressed, setIsTouchPressed] = useState(false);
   const tabletRef = useRef<HTMLDivElement>(null);
@@ -47,12 +45,6 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
 
   const handleMouseDown = () => setIsTouchPressed(true);
   const handleMouseUp = () => setIsTouchPressed(false);
-
-  const handleFinish = () => {
-    if (items.length === 0) return;
-    confetti({ particleCount: 75, spread: 65, origin: { y: 0.6 } });
-    setPurchaseSuccess(true);
-  };
 
   return (
     <div className="relative w-full h-full flex flex-col justify-between">
@@ -117,166 +109,117 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
           </div>
 
           {/* CUERPO DEL SISTEMA */}
-          {purchaseSuccess ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-fadeIn bg-slate-50">
-              <CheckCircle2 className="w-16 h-16 text-emerald-600 mb-2" />
-              <h3 className="text-2xl font-black text-slate-900">
-                ¡Compra Confirmada!
-              </h3>
-              <p className="text-xs text-slate-600 mt-1 max-w-sm">
-                Laura, podés pasar por el pasillo express sin hacer fila en caja tradicional.
-              </p>
-
-              <div className="my-4 p-4 bg-white border-2 border-slate-300 rounded-2xl w-full max-w-xs shadow-xs text-left">
-                <div className="flex justify-between text-xs text-slate-500">
-                  <span>Artículos en carrito:</span>
-                  <strong className="text-slate-900">{totalQuantity} un.</strong>
-                </div>
-                <div className="flex justify-between text-lg font-black text-slate-900 pt-2 border-t border-slate-200 mt-2">
-                  <span>Monto a pagar:</span>
-                  <span className="font-mono text-emerald-600">
-                    ${totalPrice.toLocaleString('es-AR')}
-                  </span>
-                </div>
+          <div className="flex-1 flex flex-col p-4 justify-between overflow-hidden">
+            {/* TABLA PRINCIPAL (Boceto Página 2: Producto | Cantidad | Precio | Quitar [X]) */}
+            <div className="flex-1 flex flex-col bg-white border-2 border-slate-800 rounded-2xl overflow-hidden mb-3">
+              {/* Cabecera de la tabla */}
+              <div className="grid grid-cols-12 gap-2 bg-slate-200 border-b-2 border-slate-800 px-4 py-2.5 text-xs font-black text-slate-900 uppercase tracking-wide">
+                <div className="col-span-5">Producto</div>
+                <div className="col-span-3 text-center">Cantidad</div>
+                <div className="col-span-3 text-right">Precio</div>
+                <div className="col-span-1 text-center">Quitar</div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setPurchaseSuccess(false);
-                  onClearCart();
-                }}
-                className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>Iniciar Otra Compra</span>
-              </button>
-            </div>
-          ) : (
-            <div className="flex-1 flex flex-col p-4 justify-between overflow-hidden">
-              {/* TABLA PRINCIPAL (Boceto Página 2: Producto | Cantidad | Precio | Quitar [X]) */}
-              <div className="flex-1 flex flex-col bg-white border-2 border-slate-800 rounded-2xl overflow-hidden mb-3">
-                {/* Cabecera de la tabla */}
-                <div className="grid grid-cols-12 gap-2 bg-slate-200 border-b-2 border-slate-800 px-4 py-2.5 text-xs font-black text-slate-900 uppercase tracking-wide">
-                  <div className="col-span-5">Producto</div>
-                  <div className="col-span-3 text-center">Cantidad</div>
-                  <div className="col-span-3 text-right">Precio</div>
-                  <div className="col-span-1 text-center">Quitar</div>
-                </div>
-
-                {/* Filas de la tabla */}
-                <div className="flex-1 overflow-y-auto divide-y divide-slate-200 p-1">
-                  {items.length === 0 ? (
-                    <div className="h-full min-h-[190px] flex flex-col items-center justify-center text-center p-4 text-slate-400">
-                      <ShoppingCart className="w-10 h-10 text-slate-300 mb-1" />
-                      <strong className="text-sm text-slate-600">
-                        No hay productos en el carrito
-                      </strong>
-                      <p className="text-xs text-slate-400 mt-1 max-w-xs">
-                        Arrastrá un producto desde las góndolas (izquierda) hacia la canasta del carrito para escanearlo.
-                      </p>
-                    </div>
-                  ) : (
-                    items.map((item) => (
-                      <div
-                        key={item.product.id}
-                        className="grid grid-cols-12 gap-2 items-center px-3 py-2.5 hover:bg-slate-50 transition-colors"
-                      >
-                        {/* Producto */}
-                        <div className="col-span-5 flex items-center gap-2 min-w-0">
-                          <ProductSketchIcon
-                            type={item.product.iconType}
-                            className="w-7 h-7 shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <div className="text-xs font-bold text-slate-900 truncate">
-                              {item.product.name}
-                            </div>
-                            <div className="text-[10px] text-slate-500 font-mono">
-                              ${item.product.price.toLocaleString('es-AR')} c/u
-                            </div>
+              {/* Filas de la tabla */}
+              <div className="flex-1 overflow-y-auto divide-y divide-slate-200 p-1">
+                {items.length === 0 ? (
+                  <div className="h-full min-h-[190px] flex flex-col items-center justify-center text-center p-4 text-slate-400">
+                    <ShoppingCart className="w-10 h-10 text-slate-300 mb-1" />
+                    <strong className="text-sm text-slate-600">
+                      No hay productos en el carrito
+                    </strong>
+                    <p className="text-xs text-slate-400 mt-1 max-w-xs">
+                      Arrastrá un producto desde las góndolas (izquierda) hacia el escáner del carrito para escanearlo.
+                    </p>
+                  </div>
+                ) : (
+                  items.map((item) => (
+                    <div
+                      key={item.product.id}
+                      className="grid grid-cols-12 gap-2 items-center px-3 py-2.5 hover:bg-slate-50 transition-colors"
+                    >
+                      {/* Producto */}
+                      <div className="col-span-5 flex items-center gap-2 min-w-0">
+                        <ProductSketchIcon
+                          type={item.product.iconType}
+                          className="w-7 h-7 shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-slate-900 truncate">
+                            {item.product.name}
+                          </div>
+                          <div className="text-[10px] text-slate-500 font-mono">
+                            ${item.product.price.toLocaleString('es-AR')} c/u
                           </div>
                         </div>
-
-                        {/* Cantidad */}
-                        <div className="col-span-3 text-center">
-                          <span className="font-mono font-bold text-sm text-slate-900 bg-slate-100 border border-slate-300 px-2.5 py-0.5 rounded-lg">
-                            {item.quantity}
-                          </span>
-                        </div>
-
-                        {/* Precio */}
-                        <div className="col-span-3 text-right font-mono font-bold text-sm text-slate-900">
-                          ${item.subtotal.toLocaleString('es-AR')}
-                        </div>
-
-                        {/* Botón táctil Quitar [X] */}
-                        <div className="col-span-1 flex justify-center">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              playRemoveSound();
-                              onRemoveItem(item.product.id);
-                            }}
-                            className="w-7 h-7 bg-white hover:bg-red-50 text-slate-600 hover:text-red-600 border border-slate-400 hover:border-red-500 rounded-lg flex items-center justify-center font-bold text-xs transition-colors shadow-2xs"
-                            title="Quitar este artículo"
-                          >
-                            <X className="w-4 h-4 stroke-[2.5]" />
-                          </button>
-                        </div>
                       </div>
-                    ))
-                  )}
-                </div>
-              </div>
 
-              {/* SECCIÓN INFERIOR (Boceto Página 2: "Total a pagar: $...") */}
-              <div className="flex flex-col gap-2">
-                <div className="bg-white border-2 border-slate-800 rounded-xl p-3 flex items-center justify-between shadow-xs">
-                  <div>
-                    <div className="text-xs font-black uppercase text-slate-600 tracking-wider">
-                      Total a pagar:
+                      {/* Cantidad */}
+                      <div className="col-span-3 text-center">
+                        <span className="font-mono font-bold text-sm text-slate-900 bg-slate-100 border border-slate-300 px-2.5 py-0.5 rounded-lg">
+                          {item.quantity}
+                        </span>
+                      </div>
+
+                      {/* Precio */}
+                      <div className="col-span-3 text-right font-mono font-bold text-sm text-slate-900">
+                        ${item.subtotal.toLocaleString('es-AR')}
+                      </div>
+
+                      {/* Botón táctil Quitar [X] */}
+                      <div className="col-span-1 flex justify-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            playRemoveSound();
+                            onRemoveItem(item.product.id);
+                          }}
+                          className="w-7 h-7 bg-white hover:bg-red-50 text-slate-600 hover:text-red-600 border border-slate-400 hover:border-red-500 rounded-lg flex items-center justify-center font-bold text-xs transition-colors shadow-2xs"
+                          title="Quitar este artículo"
+                        >
+                          <X className="w-4 h-4 stroke-[2.5]" />
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-[11px] text-slate-500">
-                      {totalQuantity} {totalQuantity === 1 ? 'producto acumulado' : 'productos acumulados'}
-                    </div>
-                  </div>
-                  <div className="text-2xl md:text-3xl font-black text-slate-900 font-mono">
-                    ${totalPrice.toLocaleString('es-AR')}
-                  </div>
-                </div>
-
-                {/* Acciones del pie */}
-                <div className="flex items-center justify-between pt-1">
-                  {items.length > 0 ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playRemoveSound();
-                        onClearCart();
-                      }}
-                      className="px-3 py-1.5 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg flex items-center gap-1 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span>Vaciar Carrito</span>
-                    </button>
-                  ) : (
-                    <div />
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={handleFinish}
-                    disabled={items.length === 0}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl shadow transition-all flex items-center gap-1.5"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Finalizar Compra</span>
-                  </button>
-                </div>
+                  ))
+                )}
               </div>
             </div>
-          )}
+
+            {/* SECCIÓN INFERIOR (Boceto Página 2: "Total a pagar: $...") */}
+            <div className="flex flex-col gap-2">
+              <div className="bg-white border-2 border-slate-800 rounded-xl p-3 flex items-center justify-between shadow-xs">
+                <div>
+                  <div className="text-xs font-black uppercase text-slate-600 tracking-wider">
+                    Total a pagar:
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    {totalQuantity} {totalQuantity === 1 ? 'producto acumulado' : 'productos acumulados'}
+                  </div>
+                </div>
+                <div className="text-2xl md:text-3xl font-black text-slate-900 font-mono">
+                  ${totalPrice.toLocaleString('es-AR')}
+                </div>
+              </div>
+
+              {/* Acciones del pie */}
+              {items.length > 0 && (
+                <div className="flex items-center justify-start pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playRemoveSound();
+                      onClearCart();
+                    }}
+                    className="px-3 py-1.5 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg flex items-center gap-1 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Vaciar Carrito</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* POPUP DE ESCANEO TÁCTIL (Boceto Página 3) */}
           {scannedProduct && (

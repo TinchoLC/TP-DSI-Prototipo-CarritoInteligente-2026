@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { CartItem, Product } from '../types';
 import { ProductSketchIcon } from './ProductSketchIcon';
-import { Plus, Minus, X, Trash2, CheckCircle2, RotateCcw } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { Plus, Minus, X, Trash2 } from 'lucide-react';
 import { playRemoveSound } from '../utils/sound';
 
 interface ZoomDisplayProps {
@@ -26,14 +25,6 @@ export const ZoomDisplay: React.FC<ZoomDisplayProps> = ({
   onRemoveItem,
   onClearCart,
 }) => {
-  const [purchaseSuccess, setPurchaseSuccess] = useState(false);
-
-  const handleFinish = () => {
-    if (items.length === 0) return;
-    confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
-    setPurchaseSuccess(true);
-  };
-
   return (
     <div className="relative w-full h-full flex flex-col">
       {/* Etiqueta superior roja manuscrita/destacada exactamente como en el dibujo */}
@@ -64,32 +55,7 @@ export const ZoomDisplay: React.FC<ZoomDisplayProps> = ({
         </div>
 
         {/* CONTENIDO PRINCIPAL */}
-        {purchaseSuccess ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-fadeIn">
-            <CheckCircle2 className="w-16 h-16 text-emerald-600 mb-3" />
-            <h3 className="text-2xl font-black text-slate-900">
-              ¡Compra Finalizada!
-            </h3>
-            <p className="text-sm text-slate-600 mt-1 max-w-sm">
-              Podés pasar por la salida express. El total acumulado fue:
-            </p>
-            <div className="my-4 text-3xl font-black text-slate-900 font-mono bg-slate-100 border-2 border-slate-300 rounded-xl px-6 py-2">
-              ${totalPrice.toLocaleString('es-AR')}
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setPurchaseSuccess(false);
-                onClearCart();
-              }}
-              className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>Nueva Compra</span>
-            </button>
-          </div>
-        ) : (
-          <>
+        <>
             {/* TABLA PRINCIPAL (Fiel a la Página 2 del Boceto a mano) */}
             <div className="flex-1 flex flex-col bg-white border-2 border-slate-800 rounded-2xl overflow-hidden mb-3">
               {/* Encabezados de Columna: Producto | Cantidad | Precio | Quitar */}
@@ -182,8 +148,8 @@ export const ZoomDisplay: React.FC<ZoomDisplayProps> = ({
               </div>
 
               {/* Botones de acción inferiores */}
-              <div className="flex items-center justify-between gap-2 pt-1">
-                {items.length > 0 ? (
+              {items.length > 0 && (
+                <div className="flex items-center justify-start gap-2 pt-1">
                   <button
                     type="button"
                     onClick={() => {
@@ -195,23 +161,10 @@ export const ZoomDisplay: React.FC<ZoomDisplayProps> = ({
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Vaciar Carrito</span>
                   </button>
-                ) : (
-                  <div />
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleFinish}
-                  disabled={items.length === 0}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-lg shadow transition-all flex items-center gap-1.5"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Finalizar Compra</span>
-                </button>
-              </div>
+                </div>
+              )}
             </div>
           </>
-          )}
 
         {/* POPUP DE ESCANEO (Fiel al Boceto Página 3) */}
         {scannedProduct && (

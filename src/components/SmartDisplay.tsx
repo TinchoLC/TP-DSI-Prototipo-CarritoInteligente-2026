@@ -9,13 +9,9 @@ import {
   Battery,
   Clock,
   ShoppingCart,
-  CheckCircle2,
   Wallet,
-  AlertTriangle,
-  RotateCcw,
   Sparkles,
 } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { playRemoveSound } from '../utils/sound';
 
 interface SmartDisplayProps {
@@ -43,7 +39,6 @@ export const SmartDisplay: React.FC<SmartDisplayProps> = ({
 }) => {
   const [currentTime, setCurrentTime] = useState<string>('12:00');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [purchaseCompleted, setPurchaseCompleted] = useState(false);
 
   // Live digital clock for smart cart tablet
   useEffect(() => {
@@ -61,21 +56,6 @@ export const SmartDisplay: React.FC<SmartDisplayProps> = ({
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const handleFinishPurchase = () => {
-    if (items.length === 0) return;
-    confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-    setPurchaseCompleted(true);
-  };
-
-  const handleResetPurchase = () => {
-    setPurchaseCompleted(false);
-    onClearCart();
-  };
 
   return (
     <div className="relative flex flex-col h-full bg-slate-950 rounded-3xl p-3 border-4 border-slate-700 shadow-2xl ring-1 ring-sky-500/30 overflow-hidden">
@@ -119,44 +99,8 @@ export const SmartDisplay: React.FC<SmartDisplayProps> = ({
           </div>
         </div>
 
-        {/* Modal de Finalización de Compra (Éxito) */}
-        {purchaseCompleted ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-fadeIn bg-slate-950/90 z-40">
-            <div className="p-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 mb-4 animate-bounce">
-              <CheckCircle2 className="w-12 h-12" />
-            </div>
-            <h2 className="text-2xl font-black text-white mb-1">
-              ¡Compra Finalizada con Éxito!
-            </h2>
-            <p className="text-sm text-slate-400 max-w-sm mb-4">
-              Laura, podés pasar directamente por el carril express de Carrito Inteligente sin hacer fila en la caja tradicional.
-            </p>
-
-            <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xs mb-6 text-left space-y-2">
-              <div className="flex justify-between text-xs text-slate-400">
-                <span>Total de artículos:</span>
-                <strong className="text-white">{totalQuantity} un.</strong>
-              </div>
-              <div className="flex justify-between text-base font-bold text-white pt-2 border-t border-slate-800">
-                <span>Monto cobrado:</span>
-                <span className="text-emerald-400 font-mono text-lg">
-                  ${totalPrice.toLocaleString('es-AR')}
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleResetPurchase}
-              className="px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg transition-all"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>Iniciar Nueva Compra de Prueba</span>
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* Encabezado Principal (Fiel a la vista de Boceto Principal del PDF) */}
+        {/* Encabezado Principal (Fiel a la vista de Boceto Principal del PDF) */}
+        <>
             <div className="px-5 py-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
               <div>
                 <h1 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
@@ -334,26 +278,15 @@ export const SmartDisplay: React.FC<SmartDisplayProps> = ({
                 )}
               </div>
 
-              {/* Botón de Finalizar Compra */}
+              {/* Nota inferior */}
               <div className="flex items-center justify-between gap-3">
                 <span className="text-[11px] text-slate-400 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                   <span>Subtotal actualizado automáticamente al escanear</span>
                 </span>
-
-                <button
-                  type="button"
-                  onClick={handleFinishPurchase}
-                  disabled={items.length === 0}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-teal-700 disabled:opacity-40 disabled:pointer-events-none text-white font-bold text-xs shadow-lg transition-all flex items-center gap-2"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Finalizar Compra</span>
-                </button>
               </div>
             </div>
-          </>
-        )}
+        </>
 
         {/* POPUP EMERGENTE AL ESCANEAR (Fiel al Boceto Página 3) */}
         {scannedProduct && (

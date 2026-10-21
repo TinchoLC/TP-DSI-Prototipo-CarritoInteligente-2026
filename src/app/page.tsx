@@ -10,7 +10,7 @@ import {
   playDiscardSound,
   toggleMute,
 } from '../utils/sound';
-import { Volume2, VolumeX, BookOpen, ShoppingBag } from 'lucide-react';
+import { Volume2, VolumeX, BookOpen, ShoppingBag, ShoppingCart, Tablet, ArrowRight } from 'lucide-react';
 import { TPModal } from '../components/TPModal';
 
 export default function HomePage() {
@@ -18,6 +18,7 @@ export default function HomePage() {
   const [scannedProduct, setScannedProduct] = useState<Product | null>(null);
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false);
   const [isTPModalOpen, setIsTPModalOpen] = useState<boolean>(false);
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState<boolean>(true);
 
   // Totales acumulados
   const totalPrice = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
@@ -91,6 +92,74 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-slate-200/80 p-3 md:p-5 flex flex-col justify-between max-w-[1720px] mx-auto text-slate-900">
+      {/* MODAL DE BIENVENIDA A PANTALLA COMPLETA */}
+      {isWelcomeModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-6 animate-fadeIn">
+          <div className="w-full max-w-4xl bg-white border-4 border-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col items-center text-center gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-red-600 text-white flex items-center justify-center shadow-lg">
+              <ShoppingCart className="w-9 h-9" />
+            </div>
+
+            <div className="space-y-3 max-w-2xl">
+              <span className="inline-block px-3 py-1 bg-red-100 text-red-700 font-black text-xs uppercase tracking-widest rounded-full border border-red-200">
+                Diseño de Sistemas de Información · Prototipo Interactivo
+              </span>
+              <h2 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight">
+                Sistema para Carritos Inteligentes de Supermercado
+              </h2>
+              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                Estás por ver el prototipo de un sistema que va a ser integrado en carritos de supermercado.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full text-left my-2">
+              <div className="p-5 rounded-2xl bg-slate-50 border-2 border-slate-300 flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-red-600 text-white shrink-0">
+                  <ShoppingBag className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-red-600 block">
+                    A la izquierda
+                  </span>
+                  <h3 className="text-base font-black text-slate-900 mt-0.5">
+                    Simulación de la vida real
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    Encontrarás la góndola con productos, el carrito físico y el lector de código de barras láser donde podrás arrastrar o clickear artículos para escanearlos.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-slate-50 border-2 border-slate-300 flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-slate-900 text-white shrink-0">
+                  <Tablet className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-700 block">
+                    A la derecha
+                  </span>
+                  <h3 className="text-base font-black text-slate-900 mt-0.5">
+                    Zoom a la pantalla del sistema
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    Verás un zoom en detalle a la pantalla táctil integrada en el carrito, mostrando cómo funcionará el sistema en tiempo real.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsWelcomeModalOpen(false)}
+              className="mt-2 px-8 py-4 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-base rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <span>Entrar al Prototipo</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* HEADER LIMPIO */}
       <header className="mb-3 bg-white border-2 border-slate-300 rounded-2xl px-5 py-2.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">

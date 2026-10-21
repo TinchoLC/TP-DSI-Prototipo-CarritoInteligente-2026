@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Product, CartItem } from '../types';
 import { SUPERMARKET_PRODUCTS } from '../data/products';
 import { ProductSketchIcon } from './ProductSketchIcon';
-import { ShoppingCart, ArrowRight, Sparkles, Layers } from 'lucide-react';
+import { ShoppingCart, ArrowRight } from 'lucide-react';
 
 interface RealSupermarketAisleProps {
   cartItems: CartItem[];
@@ -60,7 +60,7 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
       {/* Degradado para garantizar contraste y legibilidad */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/60 to-slate-950/90 pointer-events-none" />
 
-      {/* CABECERA: CARTEL DE SUPERMERCADO REAL (Coto / Carrefour) */}
+      {/* CABECERA: CARTEL DE SUPERMERCADO REAL */}
       <div className="relative z-10 bg-white/95 border-b-2 border-slate-300 px-4 py-2 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-2">
           <span className="px-2 py-0.5 bg-red-600 text-white font-black text-xs rounded tracking-wider">
@@ -81,7 +81,7 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
         <div className="bg-white/90 backdrop-blur-xs border-2 border-slate-300 rounded-2xl p-2.5 shadow-sm">
           <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center justify-between">
             <span>Estante Superior</span>
-            <span className="text-red-600 font-semibold">Tomar y arrastrar hacia el carrito ↓</span>
+            <span className="text-red-600 font-semibold">Tomar y arrastrar hacia el escáner ↓</span>
           </div>
 
           <div className="grid grid-cols-4 gap-2">
@@ -122,7 +122,7 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
         </div>
       </div>
 
-      {/* SECCIÓN 2: EL CARRITO DE SUPERMERCADO REAL EN EL PASILLO */}
+      {/* SECCIÓN 2: EL CARRITO DE SUPERMERCADO REAL Y EL ESCÁNER EN EL PASILLO */}
       <div className="relative z-10 px-4 pb-3 flex-1 flex flex-col justify-end">
         <div
           onDragOver={handleDragOver}
@@ -168,10 +168,10 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
             </div>
           </div>
 
-          {/* CUERPO DEL CARRITO CON FOTO REAL Y CANASTA DE ALAMBRE */}
-          <div className="mt-2 grid grid-cols-12 gap-3 items-center">
-            {/* Foto del carrito de supermercado real */}
-            <div className="col-span-5 relative h-32 flex items-center justify-center bg-slate-100 rounded-xl overflow-hidden border border-slate-300">
+          {/* CUERPO DEL CARRITO: FOTO DEL CARRITO + FOTO DEL ESCÁNER A LA DERECHA + ZONA DE ESCÁNER NEGRA CON LÍNEA ROJA EN MEDIO */}
+          <div className="mt-2 grid grid-cols-12 gap-2.5 items-center">
+            {/* Izquierda: Foto del carrito de supermercado real */}
+            <div className="col-span-4 relative h-32 flex items-center justify-center bg-slate-100 rounded-xl overflow-hidden border border-slate-300">
               <img
                 src="/images/shopping_cart.jpg"
                 alt="Carrito de supermercado"
@@ -182,40 +182,55 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
               </div>
             </div>
 
-            {/* Drop Zone: Canasta interactiva para soltar productos */}
-            <div className="col-span-7 h-32 bg-slate-50 border-2 border-dashed border-red-500 rounded-xl p-2 flex flex-col justify-between overflow-hidden relative">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-600">
-                <span>Canasta del Carrito</span>
-                <span className="bg-red-600 text-white px-1.5 py-0.2 rounded font-mono">
-                  {totalItemCount} {totalItemCount === 1 ? 'ítem' : 'ítems'} adentro
+            {/* A la derecha del carrito: Foto del lector de código de barras pasada por el usuario */}
+            <div className="col-span-3 relative h-32 flex items-center justify-center bg-white rounded-xl overflow-hidden border border-slate-300">
+              <img
+                src="/images/barcode_scanner.png"
+                alt="Lector de código de barras"
+                className="w-full h-full object-contain p-1"
+              />
+              <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-slate-900/80 text-white text-[9px] font-mono rounded">
+                Lector
+              </div>
+            </div>
+
+            {/* Parte del escáner: Negra con la línea roja en medio */}
+            <div className="col-span-5 h-32 bg-black border-2 border-red-600 rounded-xl p-2 flex flex-col justify-between overflow-hidden relative shadow-inner">
+              {/* Línea roja láser en el medio exacto */}
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1 bg-red-600 shadow-[0_0_14px_#ef4444,0_0_6px_#dc2626] z-10 pointer-events-none animate-pulse" />
+
+              <div className="relative z-20 flex items-center justify-between text-[10px] font-bold text-slate-300">
+                <span className="text-red-500 font-mono uppercase tracking-wider">Escáner Activo</span>
+                <span className="bg-red-600 text-white px-1.5 py-0.2 rounded font-mono text-[9px]">
+                  {totalItemCount} {totalItemCount === 1 ? 'ítem' : 'ítems'}
                 </span>
               </div>
 
-              {/* Items colocados dentro del carrito */}
+              {/* Items escaneados o instrucción */}
               {cartItems.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center p-1 text-slate-400">
-                  <span className="text-xs font-bold text-red-600 animate-pulse">
+                <div className="relative z-20 flex-1 flex flex-col items-center justify-between py-1 text-center pointer-events-none">
+                  <span className="text-[10px] font-bold text-red-400">
                     ↓↓ Soltá el producto acá ↓↓
                   </span>
-                  <span className="text-[10px] text-slate-500 mt-0.5">
-                    El lector infrarrojo lo escaneará automáticamente
+                  <span className="text-[9px] text-slate-400">
+                    Pasar por el láser rojo
                   </span>
                 </div>
               ) : (
-                <div className="flex-1 overflow-y-auto flex flex-wrap gap-1 content-start p-1 max-h-20">
+                <div className="relative z-20 flex-1 overflow-y-auto flex flex-wrap gap-1 content-start p-1 max-h-20">
                   {cartItems.map((item) => (
                     <div
                       key={item.product.id}
-                      className="flex items-center gap-1 bg-white border border-slate-300 rounded px-1.5 py-0.5 shadow-2xs"
+                      className="flex items-center gap-1 bg-slate-900/90 border border-slate-700 rounded px-1.5 py-0.5 shadow-2xs"
                     >
                       <ProductSketchIcon
                         type={item.product.iconType}
-                        className="w-4 h-4 shrink-0"
+                        className="w-3.5 h-3.5 shrink-0"
                       />
-                      <span className="text-[10px] font-semibold text-slate-800 truncate max-w-[65px]">
+                      <span className="text-[9px] font-semibold text-white truncate max-w-[55px]">
                         {item.product.name.split(' ')[0]}
                       </span>
-                      <span className="text-[10px] font-mono font-bold text-red-600">
+                      <span className="text-[9px] font-mono font-bold text-red-400">
                         x{item.quantity}
                       </span>
                     </div>
@@ -223,8 +238,9 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
                 </div>
               )}
 
-              {/* Haz láser infrarrojo simulado */}
-              <div className="h-1 bg-red-500 rounded-full shadow-[0_0_8px_#ef4444] opacity-80 animate-pulse" />
+              <div className="relative z-20 text-[9px] text-center text-slate-500 font-mono">
+                LÁSER INFRARROJO
+              </div>
             </div>
           </div>
         </div>
