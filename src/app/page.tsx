@@ -80,11 +80,6 @@ export default function HomePage() {
     setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
   }, []);
 
-  // Vaciar carrito
-  const handleClearCart = useCallback(() => {
-    setCartItems([]);
-  }, []);
-
   const handleToggleAudio = () => {
     const active = toggleMute();
     setIsAudioMuted(!active);
@@ -243,7 +238,6 @@ export default function HomePage() {
             onConfirmAdd={handleConfirmAdd}
             onDiscardScan={handleDiscardScan}
             onRemoveItem={handleRemoveItem}
-            onClearCart={handleClearCart}
           />
         </div>
       </div>

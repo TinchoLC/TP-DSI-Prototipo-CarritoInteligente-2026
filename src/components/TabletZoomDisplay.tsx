@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { CartItem, Product } from '../types';
 import { ProductSketchIcon } from './ProductSketchIcon';
-import { Plus, Minus, X, Trash2, Battery, Wifi, Clock, ShoppingCart } from 'lucide-react';
+import { Plus, Minus, X, Battery, Wifi, Clock, ShoppingCart } from 'lucide-react';
 import { playRemoveSound } from '../utils/sound';
 
 interface TabletZoomDisplayProps {
@@ -12,7 +12,6 @@ interface TabletZoomDisplayProps {
   onConfirmAdd: (quantity: number) => void;
   onDiscardScan: () => void;
   onRemoveItem: (productId: string) => void;
-  onClearCart: () => void;
 }
 
 export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
@@ -23,7 +22,6 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
   onConfirmAdd,
   onDiscardScan,
   onRemoveItem,
-  onClearCart,
 }) => {
   const [touchPos, setTouchPos] = useState<{ x: number; y: number } | null>(null);
   const [isTouchPressed, setIsTouchPressed] = useState(false);
@@ -202,22 +200,6 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
                 </div>
               </div>
 
-              {/* Acciones del pie */}
-              {items.length > 0 && (
-                <div className="flex items-center justify-start pt-0.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playRemoveSound();
-                      onClearCart();
-                    }}
-                    className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg flex items-center gap-1 transition-colors touch-manipulation"
-                  >
-                    <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>Vaciar Carrito</span>
-                  </button>
-                </div>
-              )}
             </div>
           </div>
 
