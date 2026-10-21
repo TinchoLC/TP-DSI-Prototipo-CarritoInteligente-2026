@@ -160,10 +160,11 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
                 </span>
               </div>
 
-              {/* Conector / Flecha hacia la derecha */}
+              {/* Conector / Flecha hacia la derecha (desktop) o abajo (celular) */}
               <div className="flex items-center text-red-600 font-extrabold text-[10px] sm:text-[11px]">
                 <span className="hidden sm:inline">Ver zoom</span>
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5" />
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5 hidden lg:inline" />
+                <span className="lg:hidden ml-0.5 text-xs font-black animate-bounce">↓</span>
               </div>
             </div>
           </div>

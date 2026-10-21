@@ -4,7 +4,6 @@ import React, { useState, useCallback } from 'react';
 import { Product, CartItem } from '../types';
 import { RealSupermarketAisle } from '../components/RealSupermarketAisle';
 import { TabletZoomDisplay } from '../components/TabletZoomDisplay';
-import { OrientationPrompt } from '../components/OrientationPrompt';
 import {
   playScanBeep,
   playAddSuccess,
@@ -93,9 +92,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-slate-200/80 p-2 sm:p-3 md:p-5 flex flex-col justify-between max-w-[1720px] mx-auto text-slate-900">
-      {/* AVISO / BLOQUEO PARA FORZAR MODO HORIZONTAL EN CELULAR */}
-      <OrientationPrompt />
-
       {/* MODAL DE BIENVENIDA A PANTALLA COMPLETA */}
       {isWelcomeModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fadeIn">
@@ -123,7 +119,8 @@ export default function HomePage() {
                 </div>
                 <div>
                   <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-red-600 block">
-                    A la izquierda
+                    <span className="md:hidden">Arriba:</span>
+                    <span className="hidden md:inline">A la izquierda:</span>
                   </span>
                   <h3 className="text-sm sm:text-base font-black text-slate-900 mt-0.5">
                     Simulación de la vida real
@@ -140,7 +137,8 @@ export default function HomePage() {
                 </div>
                 <div>
                   <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-700 block">
-                    A la derecha
+                    <span className="md:hidden">Abajo:</span>
+                    <span className="hidden md:inline">A la derecha:</span>
                   </span>
                   <h3 className="text-sm sm:text-base font-black text-slate-900 mt-0.5">
                     Zoom a la pantalla del sistema
@@ -174,8 +172,9 @@ export default function HomePage() {
             <h1 className="text-xs sm:text-base md:text-lg font-black text-slate-900 tracking-tight leading-tight">
               Prototipo DSI · Carrito Inteligente
             </h1>
-            <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block">
-              Izquierda: Simulación del mundo real (Góndola y Carrito) | Derecha: Zoom a la Tablet Táctil
+            <p className="text-[10px] sm:text-xs text-slate-500">
+              <span className="md:hidden">Arriba: Simulación física | Abajo: Zoom a la Tablet</span>
+              <span className="hidden md:inline">Izquierda: Simulación del mundo real (Góndola y Carrito) | Derecha: Zoom a la Tablet Táctil</span>
             </p>
           </div>
         </div>
@@ -213,8 +212,8 @@ export default function HomePage() {
 
       {/* ESCENA PRINCIPAL */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5 items-stretch relative">
-        {/* LADO IZQUIERDO (COL 1-6): MUNDO REAL (GÓNDOLA Y CARRITO) */}
-        <div className="lg:col-span-6 flex flex-col min-h-[520px] lg:h-full relative">
+        {/* LADO IZQUIERDO / ARRIBA (COL 1-6): MUNDO REAL (GÓNDOLA Y CARRITO) */}
+        <div className="lg:col-span-6 flex flex-col min-h-[460px] sm:min-h-[520px] lg:h-full relative">
           <RealSupermarketAisle
             cartItems={cartItems}
             onScanProduct={handleScanProduct}
@@ -234,8 +233,8 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* LADO DERECHO (COL 7-12): ZOOM A LA TABLET TÁCTIL */}
-        <div className="lg:col-span-6 flex flex-col min-h-[520px] lg:h-full relative">
+        {/* LADO DERECHO / ABAJO (COL 7-12): ZOOM A LA TABLET TÁCTIL */}
+        <div className="lg:col-span-6 flex flex-col min-h-[460px] sm:min-h-[520px] lg:h-full relative">
           <TabletZoomDisplay
             items={cartItems}
             totalPrice={totalPrice}
