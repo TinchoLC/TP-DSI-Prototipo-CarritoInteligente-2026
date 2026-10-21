@@ -27,8 +27,9 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
   const [isTouchPressed, setIsTouchPressed] = useState(false);
   const tabletRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!tabletRef.current) return;
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Solo simular el círculo táctil con mouse (en celular ya es táctil)
+    if (e.pointerType !== 'mouse' || !tabletRef.current) return;
     const rect = tabletRef.current.getBoundingClientRect();
     setTouchPos({
       x: e.clientX - rect.left,
@@ -36,13 +37,17 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
     });
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     setTouchPos(null);
     setIsTouchPressed(false);
   };
 
-  const handleMouseDown = () => setIsTouchPressed(true);
-  const handleMouseUp = () => setIsTouchPressed(false);
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse') setIsTouchPressed(true);
+  };
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse') setIsTouchPressed(false);
+  };
 
   return (
     <div className="relative w-full h-full flex flex-col justify-between">
@@ -62,10 +67,11 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
       {/* MARCO FÍSICO DE TABLET REAL */}
       <div
         ref={tabletRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        onPointerCancel={handlePointerLeave}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
         className={`relative flex-1 bg-slate-900 border-4 sm:border-8 border-slate-800 rounded-[28px] sm:rounded-[42px] p-2 sm:p-3 shadow-2xl flex flex-col overflow-hidden select-none ${
           touchPos ? 'cursor-none' : ''
         }`}
