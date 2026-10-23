@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { CartItem, Product } from '../types';
 import { ProductSketchIcon } from './ProductSketchIcon';
 import { Plus, Minus, X, Battery, Wifi, Clock, ShoppingCart } from 'lucide-react';
-import { playRemoveSound } from '../utils/sound';
+import { playRemoveSound, playScanBeep } from '../utils/sound';
 
 interface TabletZoomDisplayProps {
   items: CartItem[];
@@ -12,6 +12,7 @@ interface TabletZoomDisplayProps {
   onConfirmAdd: (quantity: number) => void;
   onDiscardScan: () => void;
   onRemoveItem: (productId: string) => void;
+  onUpdateQuantity: (productId: string, delta: number) => void;
 }
 
 export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
@@ -22,6 +23,7 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
   onConfirmAdd,
   onDiscardScan,
   onRemoveItem,
+  onUpdateQuantity,
 }) => {
   const [touchPos, setTouchPos] = useState<{ x: number; y: number } | null>(null);
   const [isTouchPressed, setIsTouchPressed] = useState(false);
@@ -158,12 +160,41 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
                         </div>
                       </div>
 
-                      {/* Cantidad */}
-                      <div className="col-span-3 text-center">
-                        <span className="font-mono font-bold text-xs sm:text-sm text-slate-900 bg-slate-100 border border-slate-300 px-1.5 sm:px-2.5 py-0.5 rounded-lg">
-                          {item.quantity}
-                        </span>
-                      </div>
+                      {/* Cantidad con botones [-] y [+] */}
+                        <div className="col-span-3 flex items-center justify-center">
+                          <div className="inline-flex items-center gap-1 bg-slate-100 border border-slate-300 rounded-lg p-0.5 shadow-2xs">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (item.quantity > 1) {
+                                  playRemoveSound();
+                                  onUpdateQuantity(item.product.id, -1);
+                                }
+                              }}
+                              disabled={item.quantity <= 1}
+                              className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-white hover:bg-slate-200 active:bg-slate-300 disabled:opacity-30 disabled:hover:bg-white text-slate-700 font-bold flex items-center justify-center transition-colors border border-slate-200 shadow-2xs touch-manipulation"
+                              title="Restar 1 unidad"
+                            >
+                              <Minus className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[2.5]" />
+                            </button>
+
+                            <span className="font-mono font-bold text-xs sm:text-sm text-slate-900 px-1 sm:px-1.5 min-w-[18px] text-center">
+                              {item.quantity}
+                            </span>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                playScanBeep();
+                                onUpdateQuantity(item.product.id, 1);
+                              }}
+                              className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-slate-800 hover:bg-slate-900 active:bg-slate-950 text-white font-bold flex items-center justify-center transition-colors shadow-2xs touch-manipulation"
+                              title="Sumar 1 unidad"
+                            >
+                              <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[2.5]" />
+                            </button>
+                          </div>
+                        </div>
 
                       {/* Precio */}
                       <div className="col-span-3 text-right font-mono font-bold text-xs sm:text-sm text-slate-900">
@@ -266,6 +297,7 @@ const TabletScanPopup: React.FC<TabletScanPopupProps> = ({
 }) => {
   const [quantity, setQuantity] = useState(1);
   const subtotal = product.price * quantity;
+  const projectedTotal = currentCartTotal + subtotal;
 
   return (
     <div className="absolute inset-0 z-40 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 animate-fadeIn">
@@ -364,10 +396,10 @@ const TabletScanPopup: React.FC<TabletScanPopupProps> = ({
         </div>
 
         {/* Total acumulado visible */}
-        <div className="pt-1.5 sm:pt-2 border-t border-slate-200 text-[10px] sm:text-[11px] text-slate-500 flex items-center justify-between">
+<div className="pt-1.5 sm:pt-2 border-t border-slate-200 text-[10px] sm:text-[11px] text-slate-500 flex items-center justify-between">
           <span>Total acumulado:</span>
           <span className="font-mono font-bold text-slate-800">
-            ${currentCartTotal.toLocaleString('es-AR')}
+            ${projectedTotal.toLocaleString('es-AR')}
           </span>
         </div>
       </div>

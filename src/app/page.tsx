@@ -80,6 +80,25 @@ export default function HomePage() {
     setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
   }, []);
 
+  // Modificar cantidad (+ / -) de un producto
+  const handleUpdateQuantity = useCallback((productId: string, delta: number) => {
+    setCartItems((prevItems) => {
+      return prevItems
+        .map((item) => {
+          if (item.product.id === productId) {
+            const newQty = item.quantity + delta;
+            if (newQty <= 0) return null;
+            return {
+              ...item,
+              quantity: newQty,
+              subtotal: newQty * item.product.price,
+            };
+          }
+          return item;
+        })
+        .filter((item) => item !== null);
+    });
+  }, []);
   const handleToggleAudio = () => {
     const active = toggleMute();
     setIsAudioMuted(!active);
@@ -238,6 +257,7 @@ export default function HomePage() {
             onConfirmAdd={handleConfirmAdd}
             onDiscardScan={handleDiscardScan}
             onRemoveItem={handleRemoveItem}
+            onUpdateQuantity={handleUpdateQuantity}
           />
         </div>
       </div>

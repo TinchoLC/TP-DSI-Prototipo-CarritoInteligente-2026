@@ -48,7 +48,6 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
 
   const topShelfProducts = SUPERMARKET_PRODUCTS.slice(0, 4);
   const bottomShelfProducts = SUPERMARKET_PRODUCTS.slice(4, 8);
-  const totalItemCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
 
   return (
     <div className="relative w-full h-full bg-slate-900 rounded-3xl overflow-hidden border-2 border-slate-300 shadow-lg flex flex-col justify-between select-none">
@@ -202,42 +201,17 @@ export const RealSupermarketAisle: React.FC<RealSupermarketAisleProps> = ({
 
               <div className="relative z-20 flex items-center justify-between text-[9px] sm:text-[10px] font-bold text-slate-300">
                 <span className="text-red-500 font-mono uppercase tracking-wider text-[8px] sm:text-[10px]">Escáner</span>
-                <span className="bg-red-600 text-white px-1 sm:px-1.5 py-0.2 rounded font-mono text-[8px] sm:text-[9px]">
-                  {totalItemCount} {totalItemCount === 1 ? 'ítem' : 'ítems'}
-                </span>
               </div>
 
-              {/* Items escaneados o instrucción */}
-              {cartItems.length === 0 ? (
-                <div className="relative z-20 flex-1 flex flex-col items-center justify-between py-0.5 sm:py-1 text-center pointer-events-none">
-                  <span className="text-[9px] sm:text-[10px] font-bold text-red-400">
-                    ↓↓ Soltá el producto acá ↓↓
-                  </span>
-                  <span className="text-[8px] sm:text-[9px] text-slate-400">
-                    Pasar por el láser rojo
-                  </span>
-                </div>
-              ) : (
-                <div className="relative z-20 flex-1 overflow-y-auto flex flex-wrap gap-1 content-start p-0.5 sm:p-1 max-h-16 sm:max-h-20">
-                  {cartItems.map((item) => (
-                    <div
-                      key={item.product.id}
-                      className="flex items-center gap-1 bg-slate-900/90 border border-slate-700 rounded px-1 sm:px-1.5 py-0.5 shadow-2xs"
-                    >
-                      <ProductSketchIcon
-                        type={item.product.iconType}
-                        className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0"
-                      />
-                      <span className="text-[8px] sm:text-[9px] font-semibold text-white truncate max-w-[45px] sm:max-w-[55px]">
-                        {item.product.name.split(' ')[0]}
-                      </span>
-                      <span className="text-[8px] sm:text-[9px] font-mono font-bold text-red-400">
-                        x{item.quantity}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* Instrucción de escaneo (sin productos ni cantidad de items) */}
+              <div className="relative z-20 flex-1 flex flex-col items-center justify-center py-0.5 sm:py-1 text-center pointer-events-none">
+                <span className="text-[9px] sm:text-[10px] font-bold text-red-400">
+                  ↓↓ Soltá el producto acá ↓↓
+                </span>
+                <span className="text-[8px] sm:text-[9px] text-slate-400">
+                  Pasar por el láser rojo
+                </span>
+              </div>
 
               <div className="relative z-20 text-[8px] sm:text-[9px] text-center text-slate-500 font-mono">
                 LÁSER INFRARROJO
