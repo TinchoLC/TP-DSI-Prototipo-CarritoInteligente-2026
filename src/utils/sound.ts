@@ -26,25 +26,44 @@ export function isMuted(): boolean {
   return !soundEnabled;
 }
 
-/** Supermarket barcode laser scan beep (approx 1750 Hz for 70ms) */
+// Cache para reutilizar la instancia de Audio del beep
+let scanAudio: HTMLAudioElement | null = null;
+
+/** Supermarket barcode laser scan beep using audio asset */
 export function playScanBeep() {
-  if (!soundEnabled) return;
+  if (!soundEnabled || typeof window === 'undefined') return;
+  try {
+    if (!scanAudio) {
+      scanAudio = new Audio('/sounds/beep.mpeg');
+      scanAudio.preload = 'auto';
+    }
+    scanAudio.currentTime = 0;
+    const playPromise = scanAudio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        // Fallback al oscilador sintético si el navegador bloquea la reproducción de audio
+        console.warn('Audio play fallback to synth:', err);
+        playSynthBeep();
+      });
+    }
+  } catch {
+    playSynthBeep();
+  }
+}
+
+/** Fallback sintético por si falla el archivo de audio */
+function playSynthBeep() {
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
-
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-
     osc.type = 'sine';
     osc.frequency.setValueAtTime(1750, ctx.currentTime);
-
     gain.gain.setValueAtTime(0.18, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-
     osc.connect(gain);
     gain.connect(ctx.destination);
-
     osc.start();
     osc.stop(ctx.currentTime + 0.08);
   } catch (e) {

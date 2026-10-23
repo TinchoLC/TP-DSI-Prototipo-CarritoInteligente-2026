@@ -10,14 +10,12 @@ import {
   playDiscardSound,
   toggleMute,
 } from '../utils/sound';
-import { Volume2, VolumeX, BookOpen, ShoppingBag, ShoppingCart, Tablet, ArrowRight } from 'lucide-react';
-import { TPModal } from '../components/TPModal';
+import { Volume2, VolumeX, ShoppingBag, ShoppingCart, Tablet, ArrowRight } from 'lucide-react';
 
 export default function HomePage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [scannedProduct, setScannedProduct] = useState<Product | null>(null);
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false);
-  const [isTPModalOpen, setIsTPModalOpen] = useState<boolean>(false);
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState<boolean>(true);
 
   // Totales acumulados
@@ -119,10 +117,13 @@ export default function HomePage() {
                 Diseño de Sistemas de Información · Prototipo Interactivo
               </span>
               <h2 className="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 tracking-tight">
-                Sistema para Carritos Inteligentes de Supermercado
+                ¡Te damos la bienvenida al Carrito Inteligente!
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed">
-                Estás por ver el prototipo de un sistema que va a ser integrado en carritos de supermercado.
+                Estás a punto de probar una nueva forma de hacer las compras. Este simulador interactivo te permitirá experimentar cómo funcionará la pantalla táctil que estará integrada directamente en los carritos de supermercado.
+              </p>
+              <p className="text-xs sm:text-sm font-semibold text-slate-700">
+                Para que la prueba sea más fácil, dividimos tu pantalla en dos partes:
               </p>
             </div>
 
@@ -133,32 +134,32 @@ export default function HomePage() {
                 </div>
                 <div>
                   <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-red-600 block">
-                    <span className="md:hidden">Arriba:</span>
-                    <span className="hidden md:inline">A la izquierda:</span>
+                    <span className="md:hidden">Parte Superior (La interacción física):</span>
+                    <span className="hidden md:inline">Tarjeta Izquierda (La interacción física):</span>
                   </span>
                   <h3 className="text-sm sm:text-base font-black text-slate-900 mt-0.5">
-                    Simulación de la vida real
+                    El Supermercado (Simulador)
                   </h3>
                   <p className="text-[11px] sm:text-xs text-slate-600 mt-1 leading-relaxed">
-                    Encontrarás la góndola con productos, el carrito físico y el lector de código de barras láser donde podrás tocar o arrastrar artículos para escanearlos.
+                    Esta sección representa el mundo real. Vas a encontrar las góndolas y el lector láser. Para simular que estás comprando, simplemente tocá o arrastrá los productos hacia el escáner rojo de la parte inferior.
                   </p>
                 </div>
               </div>
 
               <div className="p-3 sm:p-5 rounded-2xl bg-slate-50 border-2 border-slate-300 flex items-start gap-3 sm:gap-4">
-                <div className="p-3 rounded-xl bg-slate-900 text-white shrink-0">
+                <div className="p-2 sm:p-3 rounded-xl bg-slate-900 text-white shrink-0">
                   <Tablet className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
                   <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-700 block">
-                    <span className="md:hidden">Abajo:</span>
-                    <span className="hidden md:inline">A la derecha:</span>
+                    <span className="md:hidden">Parte Inferior (El software):</span>
+                    <span className="hidden md:inline">Tarjeta Derecha (El software):</span>
                   </span>
                   <h3 className="text-sm sm:text-base font-black text-slate-900 mt-0.5">
-                    Zoom a la pantalla del sistema
+                    La Pantalla del Carrito
                   </h3>
                   <p className="text-[11px] sm:text-xs text-slate-600 mt-1 leading-relaxed">
-                    Verás un zoom en detalle a la pantalla táctil integrada en el carrito, mostrando cómo funcionará el sistema en tiempo real.
+                    Este es el sistema real que verás en tu carrito. Observá cómo se actualiza al instante tu lista de compra. Podrás ver el detalle de cada producto, modificar cantidades, quitar artículos y controlar el total a pagar en todo momento.
                   </p>
                 </div>
               </div>
@@ -169,7 +170,7 @@ export default function HomePage() {
               onClick={() => setIsWelcomeModalOpen(false)}
               className="mt-1 sm:mt-2 px-6 sm:px-8 py-3 sm:py-4 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-sm sm:text-base rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center gap-2 cursor-pointer"
             >
-              <span>Entrar al Prototipo</span>
+              <span>¡Comenzar la experiencia!</span>
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
@@ -194,14 +195,13 @@ export default function HomePage() {
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            onClick={() => setIsTPModalOpen(true)}
-            className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-[11px] sm:text-xs font-bold rounded-xl flex items-center gap-1 sm:gap-1.5 transition-colors shadow-2xs"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-slate-600" />
-            <span>Ficha TP</span>
-          </button>
+          <div className="hidden sm:flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-[11px] font-medium text-slate-600">
+            <span className="font-bold text-slate-800">Integrantes:</span>
+            <span>Cabrera Martín · Corbella Leonardo · Grieco Giuliana · Squarzon Nicolás</span>
+          </div>
+          <div className="sm:hidden flex flex-wrap gap-1 text-[10px] font-medium text-slate-600 bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg">
+            <span>Cabrera · Corbella · Grieco · Squarzon</span>
+          </div>
 
           <button
             type="button"
@@ -262,11 +262,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Modal Ficha del TP */}
-      <TPModal
-        isOpen={isTPModalOpen}
-        onClose={() => setIsTPModalOpen(false)}
-      />
+      
     </main>
   );
 }

@@ -94,8 +94,6 @@ export const TabletZoomDisplay: React.FC<TabletZoomDisplayProps> = ({
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500" />
               <strong className="text-slate-900 font-black">Carrito #14</strong>
-              <span className="text-slate-300">|</span>
-              <span className="text-slate-600">Cliente: <strong>Laura</strong></span>
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4 text-[9px] sm:text-[11px] text-slate-600 font-mono">
